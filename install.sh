@@ -72,9 +72,10 @@ echo "Installing skills globally to $AMP_SKILLS_DIR..."
 for skill in "prd" "ralph"; do
     SKILL_URL="$GITHUB_REPO/skills/$skill"
     DEST="$AMP_SKILLS_DIR/$skill"
+    FULL_URL="$SKILL_URL/SKILL.md"
 
-    echo -n "  - Downloading $skill skill..."
-    if curl -fsSL "$SKILL_URL/SKILL.md" -o "$DEST/SKILL.md"; then
+    echo -n "  - Downloading $skill skill ($FULL_URL)..."
+    if curl -fsSL "$FULL_URL" -o "$DEST/SKILL.md"; then
         echo " ✔"
     else
         echo " ✖ FAILED (skipping)"
