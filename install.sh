@@ -64,32 +64,23 @@ else
 fi
 echo ""
 
-# Optionally install skills globally
-echo "Would you like to install the PRD and Ralph skills globally for Amp?"
-echo "This makes the skills available across all your projects."
-echo ""
-echo "Press 'y' to install, or any other key to skip: "
-read -r response
-if [[ "$response" =~ ^[Yy]$ ]]; then
-    AMP_SKILLS_DIR="$HOME/.config/amp/skills"
-    mkdir -p "$AMP_SKILLS_DIR"
-    echo "Installing skills to $AMP_SKILLS_DIR..."
+# Install skills globally
+AMP_SKILLS_DIR="$HOME/.config/amp/skills"
+mkdir -p "$AMP_SKILLS_DIR"
+echo "Installing skills globally to $AMP_SKILLS_DIR..."
 
-    for skill in "prd" "ralph"; do
-        SKILL_URL="$GITHUB_REPO/skills/$skill"
-        DEST="$AMP_SKILLS_DIR/$skill"
+for skill in "prd" "ralph"; do
+    SKILL_URL="$GITHUB_REPO/skills/$skill"
+    DEST="$AMP_SKILLS_DIR/$skill"
 
-        echo -n "  - Downloading $skill skill..."
-        if curl -fsSL "$SKILL_URL/SKILL.md" -o "$DEST/SKILL.md" 2>/dev/null; then
-            echo " ✔"
-        else
-            echo " ✖ FAILED (skipping)"
-        fi
-    done
-    echo "✔ Skills installed."
-else
-    echo "Skipped global skill installation."
-fi
+    echo -n "  - Downloading $skill skill..."
+    if curl -fsSL "$SKILL_URL/SKILL.md" -o "$DEST/SKILL.md" 2>/dev/null; then
+        echo " ✔"
+    else
+        echo " ✖ FAILED (skipping)"
+    fi
+done
+echo "✔ Skills installed."
 echo ""
 
 # Success message
