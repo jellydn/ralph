@@ -21,6 +21,7 @@ APPEND to progress.txt (never replace, always append):
 
 ```
 ## [Date/Time] - [Story ID]
+[Session: https://opncd.ai/s/[share-id]]
 - What was implemented
 - Files changed
 - **Learnings for future iterations:**
@@ -29,6 +30,8 @@ APPEND to progress.txt (never replace, always append):
   - Useful context (e.g., "the evaluation panel is in component X")
 ---
 ```
+
+Note: Include the share URL (if session was shared) so future iterations can reference previous work.
 
 The learnings section is critical - it helps future iterations avoid repeating mistakes and understand the codebase better.
 

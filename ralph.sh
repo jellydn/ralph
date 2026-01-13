@@ -1,14 +1,16 @@
 #!/bin/bash
 # Ralph Wiggum - Long-running AI agent loop
-# Usage: ./ralph.sh [max_iterations] [cli_tool] [model]
+# Usage: ./ralph.sh [max_iterations] [cli_tool] [model] [share]
 # cli_tool: amp (default) or opencode
 # model: opencode model ID or amp mode (smart/rush)
+# share: true/false (default: false) - share session for opencode
 
 set -e
 
 MAX_ITERATIONS=${1:-10}
 CLI_TOOL=${2:-amp}
 MODEL=${3:-}
+SHARE=${4:-false}
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROMPT_FILE="$SCRIPT_DIR/prompt-$CLI_TOOL.md"
 
@@ -69,6 +71,9 @@ if [ -n "$MODEL" ]; then
 else
 	echo "Using CLI: $CLI_TOOL (default model)"
 fi
+if [ "$CLI_TOOL" = "opencode" ]; then
+	echo "Share session: $SHARE"
+fi
 
 for i in $(seq 1 $MAX_ITERATIONS); do
 	echo ""
@@ -79,7 +84,11 @@ for i in $(seq 1 $MAX_ITERATIONS); do
 	# Run amp or opencode with the ralph prompt
 	if [ "$CLI_TOOL" = "opencode" ]; then
 		OPENCODE_MODEL=${MODEL:-opencode/big-pickle}
-		OUTPUT=$(cat "$PROMPT_FILE" | opencode run -m "$OPENCODE_MODEL" --agent build - 2>&1 | tee /dev/stderr) || true
+		if [ "$SHARE" = "true" ]; then
+			OUTPUT=$(cat "$PROMPT_FILE" | opencode run -m "$OPENCODE_MODEL" --agent build --share - 2>&1 | tee /dev/stderr) || true
+		else
+			OUTPUT=$(cat "$PROMPT_FILE" | opencode run -m "$OPENCODE_MODEL" --agent build - 2>&1 | tee /dev/stderr) || true
+		fi
 	else
 		if [ -n "$MODEL" ]; then
 			OUTPUT=$(cat "$PROMPT_FILE" | amp --dangerously-allow-all --mode "$MODEL" 2>&1 | tee /dev/stderr) || true
