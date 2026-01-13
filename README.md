@@ -16,17 +16,33 @@ Based on [Geoffrey Huntley's Ralph pattern](https://ghuntley.com/ralph/).
 
 ## Setup
 
-### Option 1: Install with curl (recommended)
+### Option 1: Install from release (recommended)
 
-Run this command in your terminal to install Ralph into your project:
+Install from the latest stable release:
+
+```bash
+curl -sSL https://github.com/snarktank/ralph/releases/latest/download/install-from-release.sh | bash
+```
+
+Or install a specific version:
+
+```bash
+curl -sSL https://github.com/snarktank/ralph/releases/download/v1.0.0/install-from-release.sh | bash -s 1.0.0
+```
+
+This will create a `scripts/ralph` directory in your project with the necessary files.
+
+### Option 2: Install from main branch (for testing)
+
+Install the latest development version from the main branch:
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/snarktank/ralph/main/install.sh | bash
 ```
 
-This will create a `scripts/ralph` directory in your project with the necessary files.
+> ⚠️ This pulls from the main branch which may contain untested changes.
 
-### Option 2: Install skills globally
+### Option 3: Install skills globally
 
 Copy the skills to your Amp config for use across all projects:
 

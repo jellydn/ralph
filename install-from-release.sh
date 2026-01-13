@@ -1,16 +1,25 @@
 #!/bin/bash
 # Installer for Ralph - The autonomous AI agent
-# NOTE: This installs from the main branch (latest development version).
-# For stable releases, use install-from-release.sh instead.
+# Installs from GitHub Releases for stable, versioned installation
 set -e
 
 # Configuration
 INSTALL_DIR="scripts/ralph"
-GITHUB_REPO="https://raw.githubusercontent.com/snarktank/ralph/main"
+GITHUB_REPO="snarktank/ralph"
+VERSION="${1:-latest}"
+
+# Resolve version to release URL
+if [ "$VERSION" = "latest" ]; then
+    RELEASE_URL="https://github.com/$GITHUB_REPO/releases/latest/download"
+else
+    RELEASE_URL="https://github.com/$GITHUB_REPO/releases/download/v$VERSION"
+fi
+
 FILES_TO_INSTALL=("ralph.sh" "prompt.md")
+SKILLS=("prd" "ralph")
 
 # Welcome message
-echo "Installing Ralph..."
+echo "Installing Ralph from release: $VERSION"
 echo "This will create a '$INSTALL_DIR' directory in your current project."
 echo ""
 
@@ -20,7 +29,7 @@ echo "✔ Created directory: $INSTALL_DIR"
 
 # Download and install files
 for file in "${FILES_TO_INSTALL[@]}"; do
-    URL="$GITHUB_REPO/$file"
+    URL="$RELEASE_URL/$file"
     DEST="$INSTALL_DIR/$file"
 
     echo -n "  - Downloading $file..."
@@ -29,7 +38,7 @@ for file in "${FILES_TO_INSTALL[@]}"; do
     else
         echo " ✖ FAILED"
         echo "Error: Could not download $URL"
-        echo "Please check the URL and your internet connection."
+        echo "Please check the version exists and your internet connection."
         exit 1
     fi
 done
@@ -71,13 +80,29 @@ AMP_SKILLS_DIR="$HOME/.config/amp/skills"
 mkdir -p "$AMP_SKILLS_DIR"
 echo "Installing skills globally to $AMP_SKILLS_DIR..."
 
-for skill in "prd" "ralph"; do
+for skill in "${SKILLS[@]}"; do
     mkdir -p "$AMP_SKILLS_DIR/$skill"
 
     echo -n "  - Downloading $skill skill..."
     TEMP_FILE=$(mktemp)
-    if curl -fsSL "$GITHUB_REPO/skills/$skill/SKILL.md" -o "$TEMP_FILE" 2>/dev/null && mv "$TEMP_FILE" "$AMP_SKILLS_DIR/$skill/SKILL.md"; then
-        echo " ✔"
+    # Skills are uploaded with flattened names in releases
+    if curl -fsSL "$RELEASE_URL/SKILL.md" -o "$TEMP_FILE" 2>/dev/null; then
+        # Try skill-specific file first (skills/prd/SKILL.md -> SKILL.md won't work for multiple)
+        # Fall back to raw GitHub for skills since they share the same name
+        rm -f "$TEMP_FILE"
+        SKILL_URL="https://raw.githubusercontent.com/$GITHUB_REPO/v$VERSION/skills/$skill/SKILL.md"
+        if [ "$VERSION" = "latest" ]; then
+            # For latest, we need to get the actual latest tag
+            LATEST_TAG=$(curl -fsSL "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+            SKILL_URL="https://raw.githubusercontent.com/$GITHUB_REPO/$LATEST_TAG/skills/$skill/SKILL.md"
+        fi
+        TEMP_FILE=$(mktemp)
+        if curl -fsSL "$SKILL_URL" -o "$TEMP_FILE" 2>/dev/null && mv "$TEMP_FILE" "$AMP_SKILLS_DIR/$skill/SKILL.md"; then
+            echo " ✔"
+        else
+            echo " ✖ FAILED (skipping)"
+            rm -f "$TEMP_FILE"
+        fi
     else
         echo " ✖ FAILED (skipping)"
         rm -f "$TEMP_FILE"
@@ -89,6 +114,7 @@ echo ""
 echo ""
 echo "============================================"
 echo "  Ralph installed successfully!"
+echo "  Version: $VERSION"
 echo "============================================"
 echo ""
 echo "Next steps:"
