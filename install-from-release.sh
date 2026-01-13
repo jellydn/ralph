@@ -85,24 +85,9 @@ for skill in "${SKILLS[@]}"; do
 
     echo -n "  - Downloading $skill skill..."
     TEMP_FILE=$(mktemp)
-    # Skills are uploaded with flattened names in releases
-    if curl -fsSL "$RELEASE_URL/SKILL.md" -o "$TEMP_FILE" 2>/dev/null; then
-        # Try skill-specific file first (skills/prd/SKILL.md -> SKILL.md won't work for multiple)
-        # Fall back to raw GitHub for skills since they share the same name
-        rm -f "$TEMP_FILE"
-        SKILL_URL="https://raw.githubusercontent.com/$GITHUB_REPO/v$VERSION/skills/$skill/SKILL.md"
-        if [ "$VERSION" = "latest" ]; then
-            # For latest, we need to get the actual latest tag
-            LATEST_TAG=$(curl -fsSL "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
-            SKILL_URL="https://raw.githubusercontent.com/$GITHUB_REPO/$LATEST_TAG/skills/$skill/SKILL.md"
-        fi
-        TEMP_FILE=$(mktemp)
-        if curl -fsSL "$SKILL_URL" -o "$TEMP_FILE" 2>/dev/null && mv "$TEMP_FILE" "$AMP_SKILLS_DIR/$skill/SKILL.md"; then
-            echo " ✔"
-        else
-            echo " ✖ FAILED (skipping)"
-            rm -f "$TEMP_FILE"
-        fi
+    # Skills are uploaded with prefixed names (e.g., prd-SKILL.md, ralph-SKILL.md)
+    if curl -fsSL "$RELEASE_URL/$skill-SKILL.md" -o "$TEMP_FILE" 2>/dev/null && mv "$TEMP_FILE" "$AMP_SKILLS_DIR/$skill/SKILL.md"; then
+        echo " ✔"
     else
         echo " ✖ FAILED (skipping)"
         rm -f "$TEMP_FILE"
