@@ -23,7 +23,11 @@ Based on [Geoffrey Huntley's Ralph pattern](https://ghuntley.com/ralph/).
 Install from the latest stable release:
 
 ```bash
+# Using Amp (default)
 curl -sSL https://github.com/snarktank/ralph/releases/latest/download/install-from-release.sh | bash
+
+# Using Claude Code
+curl -sSL https://github.com/snarktank/ralph/releases/latest/download/install-from-release.sh | bash -s -- --tool claude
 ```
 
 Or download and inspect first:
@@ -31,7 +35,7 @@ Or download and inspect first:
 ```bash
 curl -O https://github.com/snarktank/ralph/releases/latest/download/install-from-release.sh
 less install-from-release.sh  # inspect the script
-bash install-from-release.sh
+bash install-from-release.sh --tool claude  # add --tool claude for Claude Code
 ```
 
 Or install a specific version:
@@ -47,7 +51,11 @@ This will create a `scripts/ralph` directory in your project with the necessary 
 Install the latest development version from the main branch:
 
 ```bash
+# Using Amp (default)
 curl -sSL https://raw.githubusercontent.com/snarktank/ralph/main/install.sh | bash
+
+# Using Claude Code
+curl -sSL https://raw.githubusercontent.com/snarktank/ralph/main/install.sh | bash -s -- --tool claude
 ```
 
 > ⚠️ This pulls from the main branch which may contain untested changes.
