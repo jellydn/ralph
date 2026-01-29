@@ -21,6 +21,7 @@ jobs:
           cp install-from-release.sh release-assets/
           cp ralph.sh release-assets/
           cp prompt.md release-assets/
+          cp CLAUDE.md release-assets/
           cp skills/prd/SKILL.md release-assets/prd-SKILL.md
           cp skills/ralph/SKILL.md release-assets/ralph-SKILL.md
 
