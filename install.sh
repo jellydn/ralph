@@ -93,8 +93,9 @@ if [[ "$TOOL" == "amp" ]]; then
         if jq -e '."amp.experimental.autoHandoff"' "$AMP_SETTINGS_FILE" > /dev/null; then
             echo "✔ Amp auto-handoff is already configured."
         else
-            # Add the autoHandoff setting
-            jq '."amp.experimental.autoHandoff" = {"context": 90}' "$AMP_SETTINGS_FILE" > "$AMP_SETTINGS_FILE.tmp" && mv "$AMP_SETTINGS_FILE.tmp" "$AMP_SETTINGS_FILE"
+            # Add the autoHandoff setting (atomic write with cleanup)
+            TEMP_FILE=$(mktemp "$AMP_SETTINGS_FILE".XXXXXX)
+            jq '."amp.experimental.autoHandoff" = {"context": 90}' "$AMP_SETTINGS_FILE" > "$TEMP_FILE" && mv "$TEMP_FILE" "$AMP_SETTINGS_FILE"
             echo "✔ Enabled Amp auto-handoff for large stories."
         fi
     fi
