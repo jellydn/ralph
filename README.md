@@ -24,7 +24,7 @@ Copy the ralph files into your project:
 # From your project root
 mkdir -p scripts/ralph
 cp /path/to/ralph/ralph.sh scripts/ralph/
-cp /path/to/ralph/prompt.md scripts/ralph/
+cp /path/to/ralph/prompt-*.md scripts/ralph/
 chmod +x scripts/ralph/ralph.sh
 ```
 
