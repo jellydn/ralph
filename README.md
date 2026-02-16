@@ -28,6 +28,8 @@ cp /path/to/ralph/prompt-*.md scripts/ralph/
 chmod +x scripts/ralph/ralph.sh
 ```
 
+Check usage here for OpenCode https://github.com/snarktank/ralph/pull/21
+
 ### Option 2: Install skills globally
 
 Copy the skills to your Amp config for use across all projects:
