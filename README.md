@@ -10,7 +10,7 @@ Based on [Geoffrey Huntley's Ralph pattern](https://ghuntley.com/ralph/).
 
 ## Prerequisites
 
-- [Amp CLI](https://ampcode.com) installed and authenticated
+- [Amp CLI](https://ampcode.com) or [OpenCode CLI](https://opencode.ai) installed and authenticated
 - `jq` installed (`brew install jq` on macOS)
 - A git repository for your project
 
